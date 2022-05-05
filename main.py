@@ -13,7 +13,7 @@ except:
     copyright_file = open(copyright_file_name)
 
 text = copyright_file.read()
-res = "\n"
+res = "\n" if text[-1] != '\n' else ""
 i = 0
 while i < len(text):
     if text[i] == "{":
@@ -28,12 +28,19 @@ while i < len(text):
     else:
         res += text[i]
         i += 1
+res += "\n"
 
 if text.split("\n")[0] + '\n' in file_lines and (text.split("\n")[-1] in file_lines or text.split("\n")[0] + '\n' in file_lines[file_lines.index(text.split("\n")[0] + '\n'):]):
     file = open(file_name, 'w')
+    line = ""
     for i in range(0, file_lines.index(text.split("\n")[0] + '\n')):
-        file.write(file_lines[i])
+        line = file_lines[i]
+        file.write(line)
+    if line[-1] == '\n' and res[-1] == '\n':
+        res = res[1:]
     file.write(res)
+    for i in range(file_lines.index(text.split("\n")[0] + '\n') + text.count("\n") + 1, len(file_lines)):
+        file.write(file_lines[i])
 else:
     file = open(file_name, 'a')
     file.write(res)
